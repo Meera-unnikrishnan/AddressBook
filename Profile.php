@@ -57,6 +57,7 @@ $result2 = mysqli_query($conn, $sql);
       <th scope="col">Country</th>
       <th scope="col">Pincode</th>
       <th scope="col">Photo</th>
+      <th scope="col">Preview</th>
       <th scope="col">Action</th>
     </tr>
   </thead>
@@ -77,6 +78,7 @@ $result2 = mysqli_query($conn, $sql);
       <td>'.$row2["country"].'</td>
       <td>'.$row2["pincode"].'</td>
       <td>'.$row2["photo"].'</td>
+      <td><img src="img/'.$row2['photo'].'" height=50 width=50/></td>
       <td>
       <a href="Edit.php?id='.$row2['id'].'">Edit</a>/<a href="Delete.php?id='.$row2['id'].'">Delete</a> 
       </td>

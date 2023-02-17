@@ -1,4 +1,4 @@
-<!-- <?php
+<?php
 $servername = "localhost";
 $username = "root";
 $password = "meera@123";
@@ -9,14 +9,41 @@ $conn = mysqli_connect($servername, $username, $password,$dbname);
 if(!$conn){
     die('Could not Connect MySql Server:' .mysql_error());
   }
+  $name_error = "";
+  $name="";
+  $email_error = "";
+  $email="";
+  $mobile_error = "";
+  $mobile="";
+  $password_error = "";
+  $password="";
+  $is_valid = true;
 
 if (isset($_POST["submit"])) {
     $name = $_POST["name"];
     $email = $_POST["email"];
     $password =$_POST["password"];
+    
+
+    if (!preg_match("/^[a-zA-Z]+$/", $name)) {
+        $name_error = "Name must contain only letters";
+        $is_valid = false;
+      }
+
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $email_error = "Invalid email format";
+        $is_valid = false;
+      }
+
+      if (!preg_match("/^(?=.*[A-Z])(?=.*[!@#$%^&*()_+=-])(?=.*[0-9]).{8,}$/", $password)) {
+        $password_error = "Password must contain at least one upper-case letter, one special character and a minimum of 8 characters";
+        $is_valid = false;
+      }
+
+    if ($is_valid) {
     $sql = "insert into user(name,email,password) 
     VALUES('$name','$email','$password')";
-    
+ 
     if (mysqli_query($conn, $sql)) {
         echo '<script>alert("User registered successfully")</script>';
         header("Location: ./login.php");
@@ -25,10 +52,11 @@ if (isset($_POST["submit"])) {
         echo "Error: " . $sql . ":-" . mysqli_error($conn);
     }  
 }
+}
 
 mysqli_close($conn);
 
-?>  -->
+?>  
 
 <!DOCTYPE html>
 <html lang="en">
@@ -43,6 +71,9 @@ body {
   align-items: center;
   justify-content:center;
   background:white;
+}
+.error{
+    color : red;
 }
 #login .container #login-row #login-column #login-box {
   width: 800px;
@@ -75,14 +106,19 @@ body {
                             <div class="form-group">
                                 <label for="name" class="text-info">Name</label><br>
                                 <input type="text" name="name" id="name" class="form-control" required>
+                                <span class="error"><?php echo $name_error; ?></span>
+
                             </div>
                             <div class="form-group">
                                 <label for="email" class="text-info">Email:</label><br>
                                 <input type="email" name="email" id="email" class="form-control" required>
+                                <span class="error"><?php echo $email_error; ?></span>
+    
                             </div>
                             <div class="form-group">
                                 <label for="password" class="text-info">Password:</label><br>
                                 <input type="password" name="password" id="password" class="form-control" required>
+                                <span class="error"><?php echo $password_error; ?></span>
                             </div><br>
                             <div class="form-group">
                                 <input type="submit" name="submit" class="btn btn-info btn-md" value="submit">

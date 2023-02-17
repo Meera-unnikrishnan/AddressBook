@@ -107,6 +107,7 @@ if ($conn->query($sql) === TRUE) {
     <div class="form-group col-md-6 col-sm-6">
 	    <label for="photo">Photo*</label>
 	    <input type="file" name="photo" value=<?php echo $row['photo']?>><?php echo $row['photo']?>
+      <img src="img/<?php echo $row['photo']?>" height="50" width="50" />
 	</div>
     
 	<div class="form-group col-md-3 col-sm-3 pull-right" >

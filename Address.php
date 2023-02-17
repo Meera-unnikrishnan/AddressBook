@@ -17,6 +17,14 @@ if(!$conn){
   }
   $user = $_SESSION["userdetails"];
   $usermail=$user["email"];
+
+  $name_error = "";
+  $email_error = "";
+  $mobile_error = "";
+  $pincode_error = "";
+  $is_valid = true;
+
+
 if (isset($_POST["submit"])) {
     $name = $_POST["name"];
     $email = $_POST["email"];
@@ -27,6 +35,26 @@ if (isset($_POST["submit"])) {
     $country =$_POST["country"];
     $pincode =$_POST["pincode"];
     $photo =$_POST["photo"];
+
+    if (!preg_match("/^[a-zA-Z]+$/", $name)) {
+        $name_error = "Name must contain only letters";
+        $is_valid = false;
+      }
+
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $email_error = "Invalid email format";
+        $is_valid = false;
+      }
+   if (!preg_match("/^[7-9][0-9]{9}$/", $mobile)) {
+        $mobile_error = "Mobile must start with 7, 8 or 9 and contain 10 digits";
+        $is_valid = false;
+      }
+    if (!preg_match("/^[0-9]{6}$/", $pincode)) {
+        $pincode_error = "pincode must contain 6 digits";
+        $is_valid = false;
+      }
+    if ($is_valid) {
+
     $query="select id from user where email='$usermail'";
     $result = mysqli_query($conn, $query);
     $row = mysqli_fetch_array($result, MYSQLI_ASSOC);  
@@ -39,6 +67,7 @@ if (isset($_POST["submit"])) {
      }}else {
         echo "Error: " . $sql . ":-" . mysqli_error($conn);
     }  
+}
 }
 
 mysqli_close($conn);
@@ -57,6 +86,9 @@ mysqli_close($conn);
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link href="css/dcalendar.picker.css" rel="stylesheet">
 <style type="text/css">
+    .error{
+    color : red;
+}
 </style>
 	<script src="js/bootstrap.min.js"></script>
 	<script type='text/javascript'></script>
@@ -72,15 +104,18 @@ mysqli_close($conn);
 	<div class="form-group col-md-6 col-sm-6">
             <label for="name">Name*	</label>
             <input type="text" class="form-control input-sm" name="name" placeholder="" required>
+            <span class="error"><?php echo $name_error; ?></span>
         </div>
         <div class="form-group col-md-6 col-sm-6">
             <label for="email">Email*</label>
             <input type="email" class="form-control input-sm" name="email" placeholder="" required>
+            <span class="error"><?php echo $email_error; ?></span>
         </div>
 
         <div class="form-group col-md-6 col-sm-6">
             <label for="mobile">Mobile*</label>
-            <input type="text" class="form-control input-sm" name="mobile" placeholder="" pattern="[6-9]{1}[0-9]{9}" required>
+            <input type="text" class="form-control input-sm" name="mobile" placeholder=""  required>
+            <span class="error"><?php echo $mobile_error; ?></span>
         </div>
 
 	<div class="form-group col-md-6 col-sm-6">
@@ -105,7 +140,8 @@ mysqli_close($conn);
 
 	<div class="form-group col-md-6 col-sm-6">
             <label for="pincode">Pincode*</label>
-            <input type="text" class="form-control input-sm" name="pincode" placeholder="" pattern="[0-9]{6}" minlength="6" required>
+            <input type="text" class="form-control input-sm" name="pincode" placeholder="" required>
+            <span class="error"><?php echo $pincode_error; ?></span>
     </div>
     <div class="form-group col-md-6 col-sm-6">
 	    <label for="photo">Photo*</label>
