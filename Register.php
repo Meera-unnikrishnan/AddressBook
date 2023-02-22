@@ -25,7 +25,7 @@ if (isset($_POST["submit"])) {
     $password =$_POST["password"];
     
 
-    if (!preg_match("/^[a-zA-Z]+$/", $name)) {
+    if (!preg_match("/^[a-zA-Z ]*$/", $name)) {
         $name_error = "Name must contain only letters";
         $is_valid = false;
       }
@@ -77,7 +77,7 @@ body {
 }
 #login .container #login-row #login-column #login-box {
   width: 800px;
-  height: 400px;
+  height: 450px;
   border: 2px solid blue;
   background:lightyellow;
   border-radius:20px;

@@ -106,9 +106,24 @@ if ($conn->query($sql) === TRUE) {
     </div>
     <div class="form-group col-md-6 col-sm-6">
 	    <label for="photo">Photo*</label>
-	    <input type="file" name="photo" value=<?php echo $row['photo']?>><?php echo $row['photo']?>
       <img src="img/<?php echo $row['photo']?>" height="50" width="50" />
+      <?php echo $row['photo']?><br>
+      <br>
+	    <input type="file" name="photo" onchange="previewImage(event);" >
+      
+      <img id = "preview" style = "max-width : 50px;"><br><br>
 	</div>
+  <script>
+   function previewImage(event)
+   {var reader = new FileReader();
+   reader.onload = function()
+   {
+    var output = document.getElementById('preview');
+    output.src = reader.result; 
+    }
+    reader.readAsDataURL(event.target.files[0]);
+    }
+  </script>
     
 	<div class="form-group col-md-3 col-sm-3 pull-right" >
 			<input type="submit" class="btn btn-primary" name="submit" value="Submit"/>	

@@ -34,9 +34,12 @@ if (isset($_POST["submit"])) {
     $state =$_POST["state"];
     $country =$_POST["country"];
     $pincode =$_POST["pincode"];
-    $photo =$_POST["photo"];
+    $photo =$_FILES["photo"]["name"];
+    
 
-    if (!preg_match("/^[a-zA-Z]+$/", $name)) {
+
+
+    if (!preg_match("/^[a-zA-Z ]*$/", $name)) {
         $name_error = "Name must contain only letters";
         $is_valid = false;
       }
@@ -62,8 +65,15 @@ if (isset($_POST["submit"])) {
     $sql = "insert into address(user_id,name,email,mobile,address,city,state,country,pincode,photo) 
     VALUES('$user_id','$name','$email','$mobile', '$address','$city','$state','$country','$pincode','$photo')";
     if(mysqli_query($conn,$query)){
-    if (mysqli_query($conn, $sql)) {
-        echo '<script>alert("Address added successfully");location.href="profile.php"</script>'; 
+    if (mysqli_query($conn, $sql)) { 
+        
+      $target_dir = "img/";
+      $target_file = $target_dir . basename($_FILES["photo"]["name"]);
+      $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
+      $extensions_arr = array("jpg","jpeg","png","gif");
+       move_uploaded_file($_FILES["photo"]["tmp_name"], $target_file);
+
+      echo '<script>alert("Address added successfully");location.href="profile.php"</script>'; 
      }}else {
         echo "Error: " . $sql . ":-" . mysqli_error($conn);
     }  
@@ -96,63 +106,73 @@ mysqli_close($conn);
   <body style="background:lightyellow;">
 <div class="panel" style="margin:50px;border: 1px solid red;">
 	<div class="panel-heading text-info">
-        	<h3 class="panel-title" style="font-size:25px;display:flex;align-items:center;justify-content:center;">ADD ADDRESS</h3>
+    <h3 class="panel-title" style="font-size:25px;display:flex;align-items:center;justify-content:center;">ADD ADDRESS</h3>
 	</div>
 <div class="panel-body">
-    <form class="text-info" class="form" action="" method="post">
+    <form class="text-info" class="form" action="" method="post" enctype="multipart/form-data">
 <div class="col-md-12 col-sm-12">
 	<div class="form-group col-md-6 col-sm-6">
             <label for="name">Name*	</label>
             <input type="text" class="form-control input-sm" name="name" placeholder="" required>
             <span class="error"><?php echo $name_error; ?></span>
-        </div>
-        <div class="form-group col-md-6 col-sm-6">
+  </div>
+  <div class="form-group col-md-6 col-sm-6">
             <label for="email">Email*</label>
             <input type="email" class="form-control input-sm" name="email" placeholder="" required>
             <span class="error"><?php echo $email_error; ?></span>
-        </div>
+  </div>
 
-        <div class="form-group col-md-6 col-sm-6">
+  <div class="form-group col-md-6 col-sm-6">
             <label for="mobile">Mobile*</label>
             <input type="text" class="form-control input-sm" name="mobile" placeholder=""  required>
             <span class="error"><?php echo $mobile_error; ?></span>
-        </div>
+  </div>
 
 	<div class="form-group col-md-6 col-sm-6">
 	      <label for="address">Address*</label>
 	      <textarea class="form-control input-sm" name="address" rows="3" required></textarea>
-	   </div>
+	</div>
 	
 	<div class="form-group col-md-6 col-sm-6">
             <label for="city">City*</label>
             <input type="text" class="form-control input-sm" name="city" placeholder="" required>
-        </div>
+  </div>
 	
 	<div class="form-group col-md-6 col-sm-6">
             <label for="state">State*</label>
             <input type="text" class="form-control input-sm" name="state" placeholder="" required>
-        </div>
+  </div>
 
 	<div class="form-group col-md-6 col-sm-6">
             <label for="country">Country*</label>
             <input type="text" class="form-control input-sm" name="country" placeholder="" required>
-        </div>
+  </div>
 
 	<div class="form-group col-md-6 col-sm-6">
             <label for="pincode">Pincode*</label>
             <input type="text" class="form-control input-sm" name="pincode" placeholder="" required>
             <span class="error"><?php echo $pincode_error; ?></span>
-    </div>
-    <div class="form-group col-md-6 col-sm-6">
+  </div>
+  <div class="form-group col-md-6 col-sm-6">
 	    <label for="photo">Photo*</label>
-	    <input type="file" name="photo" required>
-	    <p class="help-block">Please upload an image</p>
+	    <input type="file" name="photo" id="photo" onchange="previewImage(event);" required>
+      <img id = "preview" style = "max-width : 100px;"><br><br>
 	</div>
+  <script>
+  function previewImage(event)
+  {var reader = new FileReader();
+  reader.onload = function()
+  {var output = document.getElementById('preview');
+  output.src = reader.result;
+  }
+  reader.readAsDataURL(event.target.files[0]); 
+  }
+   </script>
     
 	<div class="form-group col-md-3 col-sm-3 pull-right" >
 			<input type="submit" class="btn btn-primary" name="submit" value="Submit"/>	
-    </div>
-        </form>
+  </div>
+</form>
 </div>
 </body>
 </html>

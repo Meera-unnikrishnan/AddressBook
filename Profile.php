@@ -18,6 +18,9 @@ if (!isset($_SESSION["userdetails"])) {
 $user = $_SESSION["userdetails"];
 $usermail=$user["email"];
 $query="select id from user where email='$usermail'";
+$q="select * from user where email='$usermail'";
+$res= mysqli_query($conn, $q);
+$r1= mysqli_fetch_array($res, MYSQLI_ASSOC);
 $result1 = mysqli_query($conn, $query);
 $row1 = mysqli_fetch_array($result1, MYSQLI_ASSOC);  
 $user_id=$row1["id"];
@@ -39,7 +42,7 @@ $result2 = mysqli_query($conn, $sql);
 <div>
 <h1 style="color:navy;display:flex;align-items:center;justify-content:center;">ADDRESS BOOK</h1>
 <div class="container" style="height:50px;color:navy;display:flex;align-items:center;justify-content:center;font-size:20px;">
-    <br><p><b><?php echo 'Welcome ',$user["email"]; ?></b></p><br>   
+    <br><p><b><?php echo 'Welcome ',$r1["name"]; ?></b></p><br>   
 </div>   
 <div style="margin:20px;">
 <a href="Address.php" ><button type="button" class="btn btn-outline-success">+New Address</button></a>
