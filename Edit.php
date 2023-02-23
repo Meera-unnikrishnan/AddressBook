@@ -27,12 +27,21 @@ $city =$_POST["city"];
 $state =$_POST["state"];
 $country =$_POST["country"];
 $pincode =$_POST["pincode"];
-$photo =$_POST["photo"];
+$photo =$_FILES["photo"]["name"];
+
+  $target_dir = "img/";
+  $target_file = $target_dir . basename($_FILES["photo"]["name"]);
+  echo $target_file;
+  $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
+  $extensions_arr = array("jpg","jpeg","png","gif");
+  move_uploaded_file($_FILES["photo"]["tmp_name"], $target_file);
+
 if($photo == ""){
   $photo=$row['photo'];
 }
 $sql = "UPDATE Address SET name='$name',email='$email',mobile='$mobile',address='$address',city='$city',state='$state',country='$country',pincode='$pincode',photo='$photo' WHERE id=$id";
 if ($conn->query($sql) === TRUE) {
+  
     echo '<script>alert("Record updated Successfully");location.href="profile.php"</script>';
   } else {
     echo "Error updating record: " . $conn->error;
@@ -63,7 +72,7 @@ if ($conn->query($sql) === TRUE) {
         	<h3 class="panel-title" style="font-size:25px;display:flex;align-items:center;justify-content:center;">EDIT ADDRESS</h3>
 	</div>
 <div class="panel-body">
-    <form class="text-info" class="form" action="" method="post">
+    <form class="text-info" class="form" action="" method="post" enctype="multipart/form-data">
 <div class="col-md-12 col-sm-12">
 	<div class="form-group col-md-6 col-sm-6">
             <label for="name">Name*	</label>
@@ -109,8 +118,7 @@ if ($conn->query($sql) === TRUE) {
       <img src="img/<?php echo $row['photo']?>" height="50" width="50" />
       <?php echo $row['photo']?><br>
       <br>
-	    <input type="file" name="photo" onchange="previewImage(event);" >
-      
+	    <input type="file" name="photo" id="photo" onchange="previewImage(event);" >
       <img id = "preview" style = "max-width : 50px;"><br><br>
 	</div>
   <script>
